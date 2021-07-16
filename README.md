@@ -101,8 +101,8 @@ kubectl edit svc -n ingress-nginx ingress-nginx-controller*
 --> 설치완료  
 
 <인그레스는 두 가지 그룹이 존재>  
-&nbsp;&nbsp;&nbsp;- 일반적으로 extensions는 잘 사용하지 않음  
-&nbsp;&nbsp;&nbsp;- 인그레스라는 아이가 v1, beta1을 사용한지 3년정도 --> beta버전이 너무 오래있었음 --> 공식 버전은 v1으로 변경 --> 그래서 extensions는 곧 사라질거라서 잘 사용하지 않음  
+&nbsp;&nbsp;&nbsp;&nbsp;- 일반적으로 extensions는 잘 사용하지 않음  
+&nbsp;&nbsp;&nbsp;&nbsp;- 인그레스라는 아이가 v1, beta1을 사용한지 3년정도 --> beta버전이 너무 오래있었음 --> 공식 버전은 v1으로 변경 --> 그래서 extensions는 곧 사라질거라서 잘 사용하지 않음  
 --> myapp-ing.yaml이란 이름으로 yaml파일 만들어주기  
 ```
 apiVersion: networking.k8s.io/v1beta1
@@ -127,10 +127,12 @@ spec:
  
  
 + 순서  
-&nbsp;&nbsp;&nbsp;: 클라이언트 -> 인그레스(컨트롤러) -> 라우팅 규칙 -> 서비스(노드포트) -> 파드
+&nbsp;&nbsp;&nbsp;&nbsp;: 클라이언트 -> 인그레스(컨트롤러) -> 라우팅 규칙 -> 서비스(노드포트) -> 파드   
 *kubectl create -f myapp-ing.yaml*  
   
 ### rook  
+- K8s rook (CEPH 스토리지 구성)  
+-  온프레미스환경의 K8s 에서 스토리지클래스를 사용하기위한 좋은 방법중 하나로 현재 rook라는 프로젝트가 있음. 지금부터 rook기반의 Ceph 스토리지 설치방법  
 
 *Vagrantfile*
 ```
@@ -171,29 +173,29 @@ cd rook/cluster/examples/kubernetes/ceph*
 *kubectl create -f filesystem.yaml (3 worker)*  
 또는  
 *kubectl create -f filesystem-test.yaml (1 worker)*   
---> 파일시스템 생성
+--> 파일시스템 생성  
   
 *kubectl create -f csi/cephfs/storageclass.yaml*  
 --> 파일 스토리지 생성  
 --> 파일 시스템 생성 후 확인을 해야함!(a,b가 있어야함)  
-
+  
   
 [rook - ceph status(잘 됐는지 확인)]  
 *kubectl create -f toolbox.yaml*  
 --> toolbox 생성  
   
-*kubectl -n rook-ceph exec deploy/rook-ceph-tools -- ceph -s*
+*kubectl -n rook-ceph exec deploy/rook-ceph-tools -- ceph -s*  
 --> exec로 ceph를 실행  
 --> health: HEALTH_WARN / HEALTH_OK 둘중 하나의 상태여야 함  
   
-
+  
 ### MetalLB
---> MetalLB는 베어 메탈을 위한 로드 밸런서 구현, 쿠버네티스 표준 라우팅 프로토콜을 사용하는 클러스터  
---> 표준 네트워크 장비와 통합되는 네트워크 로드 밸런서 구현을 제공하여 이러한 불균형을 시정하는 것을 목표로 하여 베어메탈 클러스터의 외부 서비스도 가능한 한 "정상 작동"하도록 함.  
+- MetalLB는 베어 메탈을 위한 로드 밸런서 구현, 쿠버네티스 표준 라우팅 프로토콜을 사용하는 클러스터  
+- 표준 네트워크 장비와 통합되는 네트워크 로드 밸런서 구현을 제공하여 이러한 불균형을 시정하는 것을 목표로 하여 베어메탈 클러스터의 외부 서비스도 가능한 한 "정상 작동"하도록 함  
 *kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml  
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml  
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"*  
-
+  
 ```
 apiVersion: v1
 kind: ConfigMap
@@ -208,12 +210,17 @@ data:
       addresses:
       - 192.168.200.240-192.168.200.250
 ``` 
-
-*kubectl create -f metallb-config.yaml*  
-
   
-### metrics-server
-
+*kubectl create -f metallb-config.yaml*  
+  
+  
+### metrics-server  
+- 쿠버네티스에서는 기본적으로 사용할 수 있는 모니터링 도구로 힙스터(heapster)(주로 사용량확인)  
+- 힙스터를 간소화한 버전
+- 쿠버네티스에서 필요한 핵심 데이터들은 대부분 etcd에 저장되지만 메트릭 데이터들을 etcd에 저장하면 etcd의 부하가 너무 커지기 때문에 그렇게 하지 않고 메모리에 저장하도록 되어있음  
+  
+  
 *git clone https://github.com/kubernetes-incubator/metrics-server.git  
 cd metrics-server  
 kubectl apply -f deploy/1.8+/*  
+--> kubectl을 이용해서 적용하면, v1beta1.metrics.k8s.io 라는 apiservce가 생성되고, metrics-server 라는 디플로이먼트와 서비스가 생성  
