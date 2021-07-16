@@ -76,7 +76,7 @@ apt-get install -y --allow-change-held-packages kubeadm=1.19.12-00 kubectl=1.19.
 sudo systemctl daemon-reload   
 sudo systemctl restart kubelet*  
 --> 1.19.12-00으로 업그레이드!  
-
+  
 마이너버전 업그레이드  
 *sudo apt install kubeadm=1.18.19-00 kubectl=1.18.19-00 kubelet=1.18.19-00*  
 --> 버전을 일부러 낮춰줄거임 왜냐면 버전 최신이면 안전성 위험에 조금은 취약하기 때문  
@@ -84,14 +84,25 @@ sudo systemctl restart kubelet*
 ## Addon  
   
 ### ingress  
-     
+- 인그레스 : 쿠버네티스 내부 파드 노출시키기 = L7 프록시, 로드밸런서 역할     
+- nginx를 젤 많이 활용  
+   
 [k-control]  
 *kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.48.1/deploy/static/provider/aws/deploy.yaml  
 kubectl get ns  
 kubectl get pods -n ingress-nginx  
+--> 설치 후 ingress-nignx-admission-patch, ingress-nignx-admission-create는 job으로 실행된거라서 status가 completed로 뜸  
+  
+<인그레스 컨트롤 수정>   
 kubectl edit svc -n ingress-nginx ingress-nginx-controller*  
---> spec.externalIPs: 에 각 node IP 주소 적어주기(워커노드의 목록을 나열)  
+--> spec.externalIPs: 에 각 node IP 주소 적어주기(워커노드의 목록을 나열)
+--> clusterIP, externalTrafficPolicy: Cluster도 확인  
 *kubectl get svc -n ingress-nginx*  
+--> 설치완료  
+
+<인그레스는 두 가지 그룹이 존재>  
+&nbsp;&nbsp;&nbsp;- 일반적으로 extensions는 잘 사용하지 않음  
+&nbsp;&nbsp;&nbsp;- 인그레스라는 아이가 v1, beta1을 사용한지 3년정도 --> beta버전이 너무 오래있었음 --> 공식 버전은 v1으로 변경 --> 그래서 extensions는 곧 사라질거라서 잘 사용하지 않음  
 --> myapp-ing.yaml이란 이름으로 yaml파일 만들어주기  
 ```
 apiVersion: networking.k8s.io/v1beta1
@@ -108,6 +119,15 @@ spec:
           serviceName: myapp-svc-np
           servicePort: 80
 ```
+--> rules: 라우팅 정책  
+--> host: L7  
+&nbsp;&nbsp;&nbsp;  - HTTPD기반이라서 IP로 접속하지 않음  
+--> path: / -> 호스트 하위 경로 지정해준 것  
+--> backend: host로 접속 -> 서비스이름:포트로 연결 -> 해당 파드로 연결  
+ 
+ 
++ 순서  
+&nbsp;&nbsp;&nbsp;: 클라이언트 -> 인그레스(컨트롤러) -> 라우팅 규칙 -> 서비스(노드포트) -> 파드
 *kubectl create -f myapp-ing.yaml*  
   
 ### rook  
