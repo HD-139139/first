@@ -168,6 +168,7 @@ kubectl -n rook-ceph exec deploy/rook-ceph-tools -- ceph -s
   
 
 ### MetalLB
+--> MetalLB는 베어 메탈을 위한 로드 밸런서 구현, 쿠버네티스 표준 라우팅 프로토콜을 사용하는 클러스터  
 --> 표준 네트워크 장비와 통합되는 네트워크 로드 밸런서 구현을 제공하여 이러한 불균형을 시정하는 것을 목표로 하여 베어메탈 클러스터의 외부 서비스도 가능한 한 "정상 작동"하도록 함.  
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml  
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml  
