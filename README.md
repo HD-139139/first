@@ -44,8 +44,8 @@ kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discove
 --> 업그레이할 땐 순서가 가장 중요함  
 --> kubeadm -> kubectl/kubelet  
   
-apt update  
-apt-cache madison kubeadm  
+*apt update*  
+* apt-cache madison kubeadm *  
   
 [k-control]  
 apt-mark unhold kubeadm && \  
