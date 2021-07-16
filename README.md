@@ -25,3 +25,12 @@ kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discove
 ## Cluster Upgrade
 apt update
 apt-cache madison kubeadm
+
+apt-mark unhold kubeadm && \
+apt-get update && apt-get install -y kubeadm=1.21.x-00 && \
+apt-mark hold kubeadm
+<!--1.21.x-00에서 x를 최신 패치 버전으로 바꾼다.-->
+or
+  
+apt-get update && \
+apt-get install -y --allow-change-held-packages kubeadm=1.21.x-00
