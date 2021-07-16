@@ -10,7 +10,7 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl  
 sudo apt-mark hold kubelet kubeadm kubectl  
 --> 쿠버네티스의 필수요소 kubelet, kubeadm, kubectl을 설치해주었음   
---> k-control, k-node* 모두 설치해주어야함  
+--> k-control, k-node* 모두 설치해주어야함    
 --> 쿠버네티스를 설치하기 위한 도구를 설치하는 것  
 --> kubeadm : 클러스터를 부트스랩하는 명령  
     kubelet : 클러스터의 모든 머신에서 실행되는 파드와 컨테이너 시작과 같은 작업을 수행하는 컴포넌트  
