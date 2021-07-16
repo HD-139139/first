@@ -86,3 +86,9 @@ spec:
           servicePort: 80
 ```
 kubectl create -f myapp-ing.yaml
+
+  
+  
+  
+  
+  
