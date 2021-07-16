@@ -13,7 +13,7 @@ sudo apt-mark hold kubelet kubeadm kubectl*
 --> k-control, k-node* 모두 설치해주어야함    
 --> 쿠버네티스를 설치하기 위한 도구를 설치하는 것  
 --> kubeadm : 클러스터를 부트스랩하는 명령  
-    kubelet : 클러스터의 모든 머신에서 실행되는 파드와 컨테이너 시작과 같은 작업을 수행하는 컴포넌트  
+&nbsp;&nbsp;&nbsp;  kubelet : 클러스터의 모든 머신에서 실행되는 파드와 컨테이너 시작과 같은 작업을 수행하는 컴포넌트  
     kubectl : 클러스터와 통신하기 위한 커맨드 라인 유틸리티  
 --> apt-mark hold => 자동 패키지 업그레이드를 막아주는 명령어(= 업데이트 블럭)  
 
