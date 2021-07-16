@@ -22,22 +22,22 @@ sudo apt-mark hold kubelet kubeadm kubectl
 ## Cluster
 
 [k-control]  
-kubeadm init —control-plane-endpoint <IP주소> --pod-network-cidr <IP 대역> --apiserver-advertise-address <IP 사용 대역>  
+*kubeadm init —control-plane-endpoint <IP주소> --pod-network-cidr <IP 대역> --apiserver-advertise-address <IP 사용 대역>*  
 --> -control-plane-endpoint : API서버  
 --> --pod-network-cidr : 컨테이너를 파드  
 --> --apiservevr-advertise-address : 다른노드에게 API서버 주소를 알려주는 것  
 
-mkdir -p $HOME/.kube  
+*mkdir -p $HOME/.kube  
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config  
-sudo chown $(id -u):$(id –g) $HOME/.kube/config  
+sudo chown $(id -u):$(id –g) $HOME/.kube/config*  
 --> 자격증명파일  
 
-kubectl apply –f <add-on.yaml> --> calico network(https://docs.projectcalico.org/manifests/calico.yaml)  
+*kubectl apply –f <add-on.yaml>* --> calico network(https://docs.projectcalico.org/manifests/calico.yaml)  
 --> 컨테이너 네트워크 인터페이스(CNI) 설치 완료  
 
 
 [k-node*]  
-kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>   
+*kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>*   
  --> node를 클러스터에 추가   
 
 ## Cluster Upgrade  
@@ -45,12 +45,12 @@ kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discove
 --> kubeadm -> kubectl/kubelet  
   
 *apt update*  
-* apt-cache madison kubeadm *  
+*apt-cache madison kubeadm*  
   
 [k-control]  
-apt-mark unhold kubeadm && \  
+*apt-mark unhold kubeadm && \  
 apt-get update && apt-get install -y kubeadm=1.19.12-00 && \  
-apt-mark hold kubeadm  
+apt-mark hold kubeadm*  
 <1.21.x-00에서 x를 최신 패치 버전으로 바꾼다.>  
 --> 여기서 앞서 hold해둔 kubeadm을 잠시 풀어 작업이 진행될 수 있게 하고 다시 mark hold를 해서 자동 업그레이드를 막아줌(호환성을 위해)  
   
