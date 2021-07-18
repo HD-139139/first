@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: wordpress-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - image: wordpress:4.8-apache 
+        name: wordpress
+        readinessProbe:
+          exec:
+            command:
+              - ls
+              - /var/ready
+        ports:
+        - containerPort: 8080
+          protocol: TCP

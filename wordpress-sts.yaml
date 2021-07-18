@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: 
+  name: wordpress-sts
+spec: 
+  selector:
+    matchLabels:
+      app: wordpress-sts
+  serviceName: wordpress-svc-headless
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: wordpress-sts
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress:4.8-apache
+        ports:
+        - containerPort: 8080 
